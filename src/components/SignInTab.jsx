@@ -10,7 +10,7 @@ import Text from './Text';
 
 const SignInTab = () => {
   return (
-   <Pressable>
+   <Pressable onPress>
     <Link to="/signIn">
       <Text fontWeight="bold" fontSize="subheading" style={{color: 'white'}}>Sign in</Text>
     </Link>
