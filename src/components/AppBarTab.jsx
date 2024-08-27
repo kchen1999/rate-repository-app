@@ -5,7 +5,7 @@ import { Link } from 'react-router-native';
 const AppBarTab = () => {
   return (
    <Pressable>
-    <Link to="/">
+    <Link to="/repositories">
       <Text fontWeight="bold" fontSize="subheading" style={{color: 'white'}}>Repositories</Text>
     </Link>
    </Pressable> 

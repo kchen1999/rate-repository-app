@@ -4,11 +4,13 @@ import { View, TextInput, Pressable, StyleSheet } from 'react-native';
 import theme from '../theme';
 import * as yup from 'yup';
 import { useSignIn } from '../hooks/useSignIn';
+import { useSignUp } from '../hooks/useSignUp';
 import { useNavigate } from 'react-router-native';
 
 const initialValues = {
   username: '',
   password: '',
+  passwordConfirm: '',
 }
 
 const styles = StyleSheet.create({
@@ -44,7 +46,6 @@ const styles = StyleSheet.create({
   sign: {
     color: 'white',
     textAlign: 'center',
-    
   }
 })
 
@@ -52,17 +53,23 @@ const validationSchema = yup.object().shape(
   {
     username: yup
       .string()
-      .min(2, 'Too short!')
+      .min(5, 'Too short!')
+      .max(30, 'Too long!')
       .required('Username is required'),
     password: yup
       .string()
-      .min(2, 'Too short')
-      .required('Password is required')
+      .min(5, 'Too short!')
+      .max(50, 'Too long!')
+      .required('Password is required'),
+    passwordConfirm: yup
+      .string()
+      .oneOf([yup.ref('password'), 'Passwords do not match'])
+      .required('Password confirmation is required')
   }
 )
 
 
-const SignInForm = ({ onSubmit }) => {
+const SignUpForm = ({ onSubmit }) => {
   const formik  = useFormik({
     initialValues,
     validationSchema,
@@ -94,27 +101,43 @@ const SignInForm = ({ onSubmit }) => {
       {formik.touched.password && formik.errors.password && (
         <Text style={{color: theme.colors.error}}>{formik.errors.password}</Text>
       )}
+       <View style={[styles.inputContainer, formik.touched.passwordConfirm && formik.errors.passwordConfirm ? styles.textInvalid : styles.textValid] }>
+        <TextInput
+          placeholder='Password confirmation'
+          value={formik.values.passwordConfirm}
+          onChangeText={formik.handleChange('passwordConfirm')}
+          secureTextEntry={true}
+          style={{color: theme.colors.textPlaceHolder}}
+        />
+      </View>
+      {formik.touched.passwordConfirm && formik.errors.passwordConfirm && (
+        <Text style={{color: theme.colors.error}}>{formik.errors.passwordConfirm}</Text>
+      )}
       <Pressable onPress={formik.handleSubmit} style={styles.submitContainer}>
-        <Text style={styles.sign} fontWeight="bold" fontSize="subheading">Sign in</Text>
+        <Text style={styles.sign} fontWeight="bold" fontSize="subheading">Sign up</Text>
       </Pressable>
 
     </View>
   )
 }
 
-export const SignInContainer = ({ onSubmit }) => {
-  return <SignInForm onSubmit={onSubmit}/>;
+export const SignUpContainer = ({ onSubmit }) => {
+  return <SignUpForm onSubmit={onSubmit}/>;
 }
 
-const SignIn = () => {
+const SignUp = () => {
   const [signIn] = useSignIn();
+  const [signUp] = useSignUp();
   const navigate = useNavigate();
 
   const onSubmit = async (values) => {
+    console.log(values);
     const {username, password} = values;
 
     try {
+      await signUp({username, password})
       const { data } = await signIn({username, password});
+      console.log(data);
       navigate("/")
 
     } catch (e) {
@@ -122,7 +145,7 @@ const SignIn = () => {
     };
   };
 
-  return <SignInContainer onSubmit={onSubmit}/>
+  return <SignUpContainer onSubmit={onSubmit}/>
 };
 
-export default SignIn;
+export default SignUp;

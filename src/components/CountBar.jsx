@@ -5,6 +5,8 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    paddingLeft: 28,
+    paddingRight: 28, 
     paddingTop: 9.6
   },
   count: {

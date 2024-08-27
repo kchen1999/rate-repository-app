@@ -1,5 +1,5 @@
-import { View, StyleSheet } from 'react-native';
-import Text from './Text';
+import { StyleSheet, Pressable, View } from 'react-native';
+import { useNavigate } from 'react-router-native';
 import AuthorProfile from './AuthorProfile';
 import CountBar from './CountBar';
 
@@ -15,12 +15,17 @@ const styles = StyleSheet.create({
 })
 
 const RepositoryItem = ({item}) => {
+  const navigate = useNavigate();
   return (
-  <View style={styles.flexContainer}>
-    <AuthorProfile avatarUrl={item.ownerAvatarUrl} description={item.description} 
-    fullName={item.fullName} language={item.language}/>
-    <CountBar stars={item.stargazersCount} forks={item.forksCount}
-    reviews={item.reviewCount} rating={item.ratingAverage}/>
+  <View>
+    <Pressable style={styles.flexContainer} testID='repositoryItem' onPress={() => { 
+      navigate(`/${item.id}`)
+      }}>
+      <AuthorProfile avatarUrl={item.ownerAvatarUrl} description={item.description} 
+      fullName={item.fullName} language={item.language}/>
+      <CountBar stars={item.stargazersCount} forks={item.forksCount}
+      reviews={item.reviewCount} rating={item.ratingAverage}/>
+    </Pressable> 
   </View>
   );
 };
